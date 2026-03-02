@@ -4,7 +4,10 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Name     string `json:"name"`
-	Email    string `json:"email" gorm:"unique"`
-	Password string `json:"-"`
+	ID          uint        `gorm:"primarykey"`
+	Username    string      `gorm:"size:100;not null"`
+	Email       string      `gorm:"size:100;uniqueIndex;not null"`
+	Password string `gorm:"size:255;not null" json:"-"`
+	
+	Profile 	Profile 	`gorm:"constraint:OnDelete:CASCADE;"`
 }

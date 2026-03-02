@@ -19,9 +19,10 @@ func main() {
 
 	// Auto migrate
 	config.DB.AutoMigrate(&entity.User{})
+	config.DB.AutoMigrate(&entity.Profile{})
 
 	// Routes
-	routes.InitRoutes(app)
+	routes.InitRoutes(app, config.DB)
 
 	port := config.GetEnv("PORT")
 
