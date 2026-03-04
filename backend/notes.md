@@ -121,10 +121,9 @@ Create Order
 8. Columns (kanban)
 9. Tasks
 10. Permissions
-⚡ Backend Architecture Tip (Khusus kamu)
 
 Planned structure:
-
+```bash
 internal/
   modules/
     auth/
@@ -132,3 +131,4 @@ internal/
     projects/
     memberships/
     boards/
+```
