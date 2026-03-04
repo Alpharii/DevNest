@@ -1,9 +1,8 @@
 package routes
 
 import (
-	"devNest/internal/app/auth"
-	user "devNest/internal/app/users"
-	// "os"
+	"devNest/internal/modules/auth"
+	"devNest/internal/modules/users"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -27,5 +26,5 @@ func InitRoutes(app *fiber.App, db *gorm.DB) {
 	})
 
 	auth.AuthRouter(router, db)
-	user.UserRouter(router, db)
+	users.UserRouter(router, db)
 }

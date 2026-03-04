@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"devNest/internal/app/auth/authController"
+	"devNest/internal/modules/auth/authController"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
