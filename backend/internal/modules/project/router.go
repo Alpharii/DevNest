@@ -1,0 +1,17 @@
+package project
+
+import (
+	"devNest/internal/middleware"
+	"devNest/internal/modules/project/projectController"
+
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
+
+func ProjectRouter(router fiber.Router, db *gorm.DB){
+	routes := router.Group("project", middleware.Protected())
+
+	routes.Get("/", func (c *fiber.Ctx) error {
+		return projectController.FindAllProjects(c, db)	
+	})
+}

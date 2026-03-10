@@ -13,13 +13,15 @@ func main() {
 	config.LoadEnv()
 
 	app := fiber.New()
-
+	
 	// DB
 	config.ConnectDB()
 
 	// Auto migrate
 	config.DB.AutoMigrate(&entity.User{})
 	config.DB.AutoMigrate(&entity.Profile{})
+	config.DB.AutoMigrate(&entity.Project{})
+	config.DB.AutoMigrate(&entity.ProjectMember{})
 
 	// Routes
 	routes.InitRoutes(app, config.DB)
