@@ -25,7 +25,7 @@ func CreateMyProfile(c *fiber.Ctx, db *gorm.DB) error {
 	}
 
 	// request body
-	var body struct {
+	var payload struct {
 		Bio             string   `json:"bio"`
 		AvatarURL       string   `json:"avatar_url"`
 		Location        string   `json:"location"`
@@ -38,24 +38,24 @@ func CreateMyProfile(c *fiber.Ctx, db *gorm.DB) error {
 		Skills          []string `json:"skills"`
 	}
 
-	if err := c.BodyParser(&body); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid body"})
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "invalid payload"})
 	}
 
 	// convert skills -> jsonb
-	skillsJSON, _ := json.Marshal(body.Skills)
+	skillsJSON, _ := json.Marshal(payload.Skills)
 
 	profile := entity.Profile{
 		UserID:          userID,
-		Bio:             body.Bio,
-		AvatarURL:       body.AvatarURL,
-		Location:        body.Location,
-		Website:         body.Website,
-		GithubURL:       body.GithubURL,
-		LinkedinURL:     body.LinkedinURL,
-		TwitterURL:      body.TwitterURL,
-		ExperienceLevel: body.ExperienceLevel,
-		Availability:    body.Availability,
+		Bio:             payload.Bio,
+		AvatarURL:       payload.AvatarURL,
+		Location:        payload.Location,
+		Website:         payload.Website,
+		GithubURL:       payload.GithubURL,
+		LinkedinURL:     payload.LinkedinURL,
+		TwitterURL:      payload.TwitterURL,
+		ExperienceLevel: payload.ExperienceLevel,
+		Availability:    payload.Availability,
 		Skills:          skillsJSON,
 	}
 

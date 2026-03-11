@@ -9,7 +9,11 @@ import (
 
 func FindAllProjects(c *fiber.Ctx, db *gorm.DB) error {
 	var project []entity.Project
-	if err := db.Find(&project).Error; err != nil {
+
+	if err := db.
+		Preload("Owner").
+		Preload("Owner.Profile").
+		Find(&project).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "error"})
 	}
 

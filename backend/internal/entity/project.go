@@ -9,7 +9,6 @@ type Project struct {
 	Description string 			`gorm:"type:text"`
 	OwnerID 	uint
 	Owner   	User 			`gorm:"foreignKey:OwnerID"`
-	Visibility 	string 			`gorm:"type:varchar(20);default:'private'"`
-
+	Visibility *uint 			`gorm:"default:1;not null"`
 	Members 	[]ProjectMember `gorm:"foreignKey:ProjectID"`
 }

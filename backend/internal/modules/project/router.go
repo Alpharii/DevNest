@@ -14,4 +14,8 @@ func ProjectRouter(router fiber.Router, db *gorm.DB){
 	routes.Get("/", func (c *fiber.Ctx) error {
 		return projectController.FindAllProjects(c, db)	
 	})
+
+	routes.Post("/", func (c *fiber.Ctx) error {
+		return projectController.CreateProject(c, db)
+	})
 }
