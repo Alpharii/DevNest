@@ -15,7 +15,15 @@ func ProjectRouter(router fiber.Router, db *gorm.DB){
 		return projectController.FindAllProjects(c, db)	
 	})
 
+	routes.Get("/:id", func (c *fiber.Ctx) error {
+		return projectController.FindDetailProject(c, db)	
+	})
+
 	routes.Post("/", func (c *fiber.Ctx) error {
 		return projectController.CreateProject(c, db)
+	})
+
+	routes.Patch("/:id", func (c *fiber.Ctx) error {
+		return projectController.EditProject(c, db)
 	})
 }
