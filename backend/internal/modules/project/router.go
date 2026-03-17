@@ -26,4 +26,8 @@ func ProjectRouter(router fiber.Router, db *gorm.DB){
 	routes.Patch("/:id", func (c *fiber.Ctx) error {
 		return projectController.EditProject(c, db)
 	})
+
+	routes.Post("/:id/join", func (c *fiber.Ctx) error  {
+		return projectController.JoinProject(c, db)
+	})
 }
