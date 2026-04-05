@@ -25,7 +25,10 @@ func JoinProject(c *fiber.Ctx, db *gorm.DB) error {
 	projectId := c.Params("id")
 	var project entity.Project
 
-	userID := userId.(uint)
+	userID, ok := userId.(uint)
+	if !ok {
+		return c.Status(401).JSON(fiber.Map{"err": "invalid session"})
+	}
 
 	//validate
 	if err := db.Where("id = ?", projectId).First(&project).Error; err != nil {

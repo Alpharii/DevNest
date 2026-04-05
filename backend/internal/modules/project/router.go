@@ -30,4 +30,8 @@ func ProjectRouter(router fiber.Router, db *gorm.DB){
 	routes.Post("/:id/join", func (c *fiber.Ctx) error  {
 		return projectController.JoinProject(c, db)
 	})
+
+	routes.Post("/:id/invite", func (c *fiber.Ctx) error  {
+		return projectController.InviteMember(c, db)
+	})
 }
