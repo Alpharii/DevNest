@@ -20,40 +20,55 @@ func KickMember(c *fiber.Ctx, db *gorm.DB) error {
 	}
 
 	projectId := c.Params("id")
-	if err := db.Where("id = ?", projectId).Error; err != nil {
-		return c.Status(404).JSON(fiber.Map{"err": "project not found"})
-	}
 
 	var payload struct {
 		UserId	uint	`json:"user_id"`
 	}
 
+	if payload.UserId == 0 {
+		return c.Status(400).JSON(fiber.Map{"err": "user_id is required"})
+	}
+
+	var project entity.Project
+	if err := db.Where("id = ?", projectId).First(&project).Error; err != nil {
+		return c.Status(404).JSON(fiber.Map{"err": "user not found"})
+	}
+
+	if (project.OwnerID != userID) {
+		return c.Status(401).JSON(fiber.Map{"err": "unauthorized"})
+	}
+
 	if err := c.BodyParser(&payload); err != nil {
-		c.Status(400).JSON(fiber.Map{"err": "payload invalid"})
+		return c.Status(400).JSON(fiber.Map{"err": "payload invalid"})
+	}
+
+	var user entity.User
+	if err := db.Where("id = ?", payload.UserId).First(&user).Error; err != nil {
+		return c.Status(404).JSON(fiber.Map{"err": "user not found"})
 	}
 
 	var count int64
 	if err := db.Model(&entity.ProjectMember{}).
-		Where("project_id = ? AND user_id = ?", projectId, userID).
+		Where("project_id = ? AND user_id = ?", projectId, user.ID).
 		Count(&count).Error; err != nil {
-			c.Status(404).JSON(fiber.Map{"err": "project member not found"})
+			return c.Status(404).JSON(fiber.Map{"err": "project member not found"})
 		}
 
 	if count == 0 {
 		return c.Status(400).JSON(fiber.Map{"err": "user is not a project member"})
 	}
 
-	var procjetMember entity.ProjectMember
-	if err := db.Where("project_id = ? & user_id = ?", projectId, userID).First(&procjetMember).Error; err != nil {
+	var projectMember entity.ProjectMember
+	if err := db.Where("project_id = ? AND user_id = ?", projectId, user.ID).First(&projectMember).Error; err != nil {
 		return c.Status(404).JSON(fiber.Map{"err": "project member not found"})
 	}
 
-	if err := db.Delete(&procjetMember).Error; err != nil {
+	if err := db.Delete(&projectMember).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"err": "internal server error"})
 	}
 
 	return c.Status(200).JSON(fiber.Map{
 		"status": "success",
-		"data": procjetMember,
+		"data": projectMember,
 	})
 }
