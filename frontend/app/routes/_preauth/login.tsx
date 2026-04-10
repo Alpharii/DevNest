@@ -9,8 +9,21 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { FormProviderWrapper } from "~/components/FormWrapper";
+
+const loginSchema = z.object({
+  email: z.string().email("Email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
+  remember: z.boolean().optional(),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export async function action({ request }: ActionFunctionArgs) {
+  console.log("Server received login request");
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
@@ -34,6 +47,19 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const actionData = useActionData<typeof action>();
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      remember: false,
+    },
+  });
+
+  const onSubmit = (data: LoginFormValues) => {
+    console.log("Client Data:", data);
+  };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
@@ -89,7 +115,11 @@ export default function LoginPage() {
           )}
 
           {/* Form */}
-          <Form method="post" className="space-y-4">
+          <FormProviderWrapper
+            form={form}
+            onSubmit={onSubmit}
+            className="space-y-4"
+          >
 
             {/* Email */}
             <div className="space-y-1.5">
@@ -155,7 +185,7 @@ export default function LoginPage() {
               <LogIn className="h-3.5 w-3.5" />
               Masuk
             </Button>
-          </Form>
+          </FormProviderWrapper>
 
           {/* SSO divider */}
           <div className="flex items-center gap-3">
