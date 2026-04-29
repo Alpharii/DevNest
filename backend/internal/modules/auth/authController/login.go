@@ -27,12 +27,12 @@ func Login(c*fiber.Ctx, db*gorm.DB) error {
 	}
 
 	if err := db.Where("email = ?", payload.Email).First(&user).Error; err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "user not found"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User not found or password is wrong"})
 	}
 
 	isAuthorized := utils.CheckHashedPassword(user.Password, payload.Password)
 	if !isAuthorized {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "wrong password"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "User not found or password is wrong"})
 	}
 
 	user.Password = ""

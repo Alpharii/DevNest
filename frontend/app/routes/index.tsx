@@ -14,5 +14,5 @@ export async function loader({request}: LoaderFunctionArgs){
   const token = await tokenCookie.parse(cookie)
   if(!token) return redirect("/login")
   
-  return redirect("/chat")
+  return redirect("/home")
 }

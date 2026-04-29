@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { Form, Link, redirect, useActionData, type ActionFunctionArgs } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useActionData, type ActionFunctionArgs } from "react-router";
 import { Eye, EyeOff, Lock, Mail, LogIn, Zap } from "lucide-react";
-
-import { apiClient, tokenCookie } from "~/lib/apiClient";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -13,8 +10,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FormProviderWrapper } from "~/components/FormWrapper";
+import { toast } from "sonner";
+import { LoginAction } from "./action/login";
 
 const loginSchema = z.object({
+  flag: z.string().min(1),
   email: z.string().email("Email tidak valid"),
   password: z.string().min(6, "Password minimal 6 karakter"),
   remember: z.boolean().optional(),
@@ -23,21 +23,16 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export async function action({ request }: ActionFunctionArgs) {
-  console.log("Server received login request");
   const formData = await request.formData();
+  const flag = formData.get("flag");
   const email = formData.get("email");
   const password = formData.get("password");
+  const remember = formData.get("remember") === "true";
 
-  if (typeof email !== "string" || typeof password !== "string") {
-    return { success: false, error: "Email dan password wajib diisi", status: 400 };
-  }
-
-  try {
-    const res = await apiClient.post("/auth/login", { email, password });
-    const token = res.data.token;
-    return redirect("/home", {
-      headers: { "Set-Cookie": await tokenCookie.serialize(token) },
-    });
+  try{    
+    if (flag === "login") {
+      return await LoginAction(email as string, password as string, remember);
+    }
   } catch (error: any) {
     const message = error.response?.data?.error || "Login gagal, periksa kembali email/password";
     return { success: false, error: message, status: 401 };
@@ -51,15 +46,24 @@ export default function LoginPage() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
+      flag: "login",
       email: "",
       password: "",
       remember: false,
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Client Data:", data);
-  };
+  useEffect(() => {
+    console.log("actionData", actionData);
+    if (!actionData) return;
+
+    if (actionData.error) {
+      toast.error(actionData.error, { position: "top-right" });
+    }
+  }, [actionData]);
+
+  // const watchedValues = form.watch();
+  // console.log('form', watchedValues);
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
@@ -107,19 +111,12 @@ export default function LoginPage() {
             <p className="text-sm text-muted-foreground">Masuk ke akun kamu untuk melanjutkan</p>
           </div>
 
-          {/* Error */}
-          {actionData?.error && (
-            <Alert variant="destructive" className="py-2.5">
-              <AlertDescription className="text-sm">{actionData.error}</AlertDescription>
-            </Alert>
-          )}
-
           {/* Form */}
           <FormProviderWrapper
             form={form}
-            onSubmit={onSubmit}
             className="space-y-4"
           >
+            <input type="hidden" name="flag" value={form.watch("flag") || "login"} />
 
             {/* Email */}
             <div className="space-y-1.5">
@@ -134,6 +131,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="nama@email.com"
                   required
+                  onChange={(e) => form.setValue("email", e.target.value)}
                   className="pl-9 h-10 text-sm bg-muted/40 border-border/60 focus-visible:ring-violet-500/30 focus-visible:border-violet-500"
                 />
               </div>
@@ -152,6 +150,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   required
+                  onChange={(e) => form.setValue("password", e.target.value)}
                   className="pl-9 pr-10 h-10 text-sm bg-muted/40 border-border/60 focus-visible:ring-violet-500/30 focus-visible:border-violet-500"
                 />
                 <button
@@ -167,7 +166,9 @@ export default function LoginPage() {
             {/* Remember + forgot */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" className="h-3.5 w-3.5 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600" />
+                <Checkbox id="remember" className="h-3.5 w-3.5 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600" onCheckedChange={(checked) => {
+                  form.setValue("remember", !!checked)}} />
+                <input type="hidden" name="remember" value={form.watch("remember") ? "true" : "false"} />
                 <Label htmlFor="remember" className="text-xs text-muted-foreground cursor-pointer">
                   Ingat saya
                 </Label>
