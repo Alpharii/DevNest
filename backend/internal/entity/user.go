@@ -14,4 +14,5 @@ type User struct {
 
 	OwnedProjects []Project       `gorm:"foreignKey:OwnerID"`
 	MemberProjects []ProjectMember `gorm:"foreignKey:UserID"`
+	AssignedTasks	[]TaskAssignee  `gorm:"foreignKey:UserID"`
 }

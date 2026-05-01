@@ -11,4 +11,5 @@ type Project struct {
 	Owner   	User 			`gorm:"foreignKey:OwnerID"`
 	Visibility *uint 			`gorm:"default:1;not null"`
 	Members 	[]ProjectMember `gorm:"foreignKey:ProjectID"`
+	BoardColumns []BoardColumn 	`gorm:"foreignKey:ProjectID"`
 }
