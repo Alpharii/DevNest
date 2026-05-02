@@ -14,9 +14,11 @@ export default [
     ]),
 
     index("routes/index.tsx"),
+    route("logout", "routes/Logout.tsx"),
 
     layout("routes/_postauth/layout.tsx", [
-      route("home", "routes/_postauth/home.tsx"),
+      route("home", "routes/_postauth/Home.tsx"),
+      route("dashboard", "routes/_postauth/Dashboard.tsx"),
     ]),
   ]),
 ] satisfies RouteConfig;

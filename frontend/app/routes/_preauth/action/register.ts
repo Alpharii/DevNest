@@ -1,7 +1,6 @@
 import { apiClient, tokenCookie } from "~/lib/apiClient";
 
 export const RegisterAction = async (name: string, email: string, password: string, confirmPassword: string) => {
-    console.log('register action', { name, email, password, confirmPassword })
   if (typeof email !== "string" || typeof password !== "string") {
     return { success: false, error: "Email dan password wajib diisi", status: 400 };
   }

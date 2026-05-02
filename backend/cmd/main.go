@@ -22,6 +22,9 @@ func main() {
 	config.DB.AutoMigrate(&entity.Profile{})
 	config.DB.AutoMigrate(&entity.Project{})
 	config.DB.AutoMigrate(&entity.ProjectMember{})
+	config.DB.AutoMigrate(&entity.BoardColumn{})
+	config.DB.AutoMigrate(&entity.Task{})
+	config.DB.AutoMigrate(&entity.TaskAssignee{})
 
 	// Routes
 	routes.InitRoutes(app, config.DB)

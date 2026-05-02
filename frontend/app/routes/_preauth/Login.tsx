@@ -54,7 +54,6 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-    console.log("actionData", actionData);
     if (!actionData) return;
 
     if (actionData.error) {
@@ -76,7 +75,7 @@ export default function LoginPage() {
 
         {/* Brand */}
         <div className="flex items-center gap-2.5 z-10">
-          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600">
+          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-br from-violet-600 to-indigo-600">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <span className="text-white font-medium text-[15px]">DevNest</span>

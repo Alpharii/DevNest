@@ -10,7 +10,7 @@ export const LoginAction = async (email: string, password: string, remember: boo
     const res = await apiClient.post("/auth/login", { email, password });
     const token = res.data.token;
 
-    return redirect("/home", {
+    return redirect("/dashboard", {
       headers: {
         "Set-Cookie": await tokenCookie.serialize(token, {
           maxAge: remember ? 60 * 60 * 24 * 7 : undefined,

@@ -58,8 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
   } catch (error: any) {
-    const message =
-      error.response?.data?.error || "Registrasi gagal, coba lagi nanti";
+    const message = error.response?.data?.error || "Registrasi gagal, coba lagi nanti";
     return { success: false, error: message, status: 400 };
   }
 }

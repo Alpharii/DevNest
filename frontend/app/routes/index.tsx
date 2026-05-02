@@ -9,10 +9,9 @@ export function meta({}: MetaArgs) {
 }
 
 export async function loader({request}: LoaderFunctionArgs){
-  console.log('request', request)
   const cookie = request.headers.get("cookie")
   const token = await tokenCookie.parse(cookie)
   if(!token) return redirect("/login")
   
-  return redirect("/home")
+  return redirect("/dashboard")
 }

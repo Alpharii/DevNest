@@ -14,6 +14,10 @@ func UserRouter(router fiber.Router, db *gorm.DB) {
 	routes.Get("/me", func(c *fiber.Ctx) error {
 		return usersController.GetMe(c, db)
 	})
+
+	routes.Get("/me/dashboard", func(c *fiber.Ctx) error {
+		return usersController.GetUserDashboard(c, db)
+	})
 	
 	routes.Get("/:id", func(c *fiber.Ctx) error {
 		return usersController.GetUserProfileById(c, db)
