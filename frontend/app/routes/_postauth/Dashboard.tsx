@@ -73,8 +73,8 @@ export default function Home() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard icon={Crown} label="Proyek dimiliki" value={owned_projects.length} accent />
-        <StatCard icon={Users} label="Proyek diikuti" value={member_projects.length} />
+        <StatCard icon={Crown} label="Proyek dimiliki" value={owned_projects?.length || 0} accent />
+        <StatCard icon={Users} label="Proyek diikuti" value={member_projects?.length} />
         <StatCard icon={CheckSquare} label="Tugas aktif" value={assigned_tasks?.length ?? 0} />
         <StatCard icon={User} label="Role" value="Developer" />
       </div>
@@ -89,7 +89,7 @@ export default function Home() {
               <FolderKanban className="h-3.5 w-3.5 text-violet-400" />
               <h2 className="text-sm font-medium text-foreground">Proyek Saya</h2>
               <span className="text-[11px] text-muted-foreground bg-slate-50 px-1.5 py-0.5 rounded-full">
-                {owned_projects.length}
+                {owned_projects?.length}
               </span>
             </div>
             <Button
@@ -103,25 +103,28 @@ export default function Home() {
           </div>
 
           <ul className="divide-y divide-zinc-800/60">
-            {owned_projects.length === 0 && (
+            {!owned_projects ? (
               <li className="px-5 py-8 text-center text-xs text-muted-foreground">
                 Belum ada proyek. Buat proyek pertamamu!
               </li>
+            ) : (
+              <div>                
+                {owned_projects.map((p: any) => (
+                  <li key={p.id} className="flex items-center justify-between px-5 py-3 group hover:bg-slate-300 transition-colors">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{p.description || "—"}</p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-3 shrink-0">
+                      <span className="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition-colors">
+                        #{p.id}
+                      </span>
+                      <ArrowRight className="h-3.5 w-3.5 text-zinc-700 group-hover:text-violet-400 transition-colors" />
+                    </div>
+                  </li>
+                ))}
+              </div>
             )}
-            {owned_projects.map((p: any) => (
-              <li key={p.id} className="flex items-center justify-between px-5 py-3 group hover:bg-slate-300 transition-colors">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">{p.description || "—"}</p>
-                </div>
-                <div className="flex items-center gap-2 ml-3 shrink-0">
-                  <span className="text-[11px] text-zinc-600 group-hover:text-zinc-400 transition-colors">
-                    #{p.id}
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5 text-zinc-700 group-hover:text-violet-400 transition-colors" />
-                </div>
-              </li>
-            ))}
           </ul>
         </section>
 
@@ -132,13 +135,13 @@ export default function Home() {
               <Users className="h-3.5 w-3.5 text-teal-400" />
               <h2 className="text-sm font-medium text-foreground">Proyek Bergabung</h2>
               <span className="text-[11px] text-muted-foreground bg-slate-50 px-1.5 py-0.5 rounded-full">
-                {member_projects.length}
+                {member_projects?.length}
               </span>
             </div>
           </div>
 
           <ul className="divide-y divide-zinc-800/60">
-            {member_projects.length === 0 && (
+            {member_projects?.length === 0 && (
               <li className="px-5 py-8 text-center text-xs text-muted-foreground">
                 Kamu belum bergabung ke proyek manapun.
               </li>
@@ -169,7 +172,7 @@ export default function Home() {
           <h2 className="text-sm font-medium text-foreground">Tugas Saya</h2>
         </div>
 
-        {!assigned_tasks || assigned_tasks.length === 0 ? (
+        {!assigned_tasks || assigned_tasks?.length === 0 ? (
           <div className="px-5 py-10 flex flex-col items-center gap-2 text-center">
             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center mb-1">
               <CheckSquare className="h-5 w-5 text-zinc-600" />

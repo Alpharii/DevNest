@@ -17,7 +17,7 @@ const NAV_ITEMS = [
   { label: "Dashboard",    to: "/dashboard",     icon: LayoutDashboard },
   { label: "Projects",     to: "/projects",      icon: FolderKanban },
   { label: "Tasks",        to: "/tasks",         icon: CheckSquare },
-  { label: "Teamm",        to: "/members",       icon: Users },
+  { label: "Team",        to: "/members",       icon: Users },
   { label: "Marketplace",  to: "/marketplace",   icon: Briefcase },
   { label: "Notification", to: "/notifications", icon: Bell },
 ];

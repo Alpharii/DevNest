@@ -29,8 +29,7 @@ export default function PostAuthLayout() {
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-20">
           <Outlet context={token} />
           <Footer />
         </main>

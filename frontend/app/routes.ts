@@ -19,6 +19,9 @@ export default [
     layout("routes/_postauth/Postauth.tsx", [
       route("home", "routes/_postauth/Home.tsx"),
       route("dashboard", "routes/_postauth/Dashboard.tsx"),
+      route("projects", "routes/_postauth/Projects/index.tsx"),
+      route("projects/:id", "routes/_postauth/Projects/$id.tsx"),
+      route("tasks", "routes/_postauth/Tasks.tsx"),
     ]),
   ]),
 ] satisfies RouteConfig;
