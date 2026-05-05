@@ -1,5 +1,5 @@
 import { useLoaderData, type LoaderFunctionArgs } from "react-router";
-import { apiClient } from "~/lib/apiClient";
+import { apiClient, createApiClientWithToken, tokenCookie } from "~/lib/apiClient";
 import {
   Zap, FolderKanban, Users, CheckSquare, User,
   MoreHorizontal, Plus, Crown, Mail, ArrowRight,
@@ -10,6 +10,9 @@ import { RoleBadge } from "~/components/RoleBadge";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
+    const cookie = request.headers.get("Cookie");
+    const token = await tokenCookie.parse(cookie);
+    const api = createApiClientWithToken(token)
     const userData = await apiClient.get("users/me/dashboard");
     return { userData: userData.data };
   } catch (error: any) {

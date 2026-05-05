@@ -12,4 +12,5 @@ type Project struct {
 	Visibility *uint 			`gorm:"default:1;not null"`
 	Members 	[]ProjectMember `gorm:"foreignKey:ProjectID"`
 	BoardColumns []BoardColumn 	`gorm:"foreignKey:ProjectID"`
+	ImageUrl	string		
 }

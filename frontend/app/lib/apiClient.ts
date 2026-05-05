@@ -27,3 +27,43 @@ apiClient.interceptors.request.use((config) => {
 export function setApiToken(token: string | null) {
     authToken = token;
 }
+
+export const createApiClientWithToken = (token?: string | null) => {
+  return {
+    get: (url: string, config = {}) =>
+      apiClient.get(url, {
+        ...config,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          ...(config as any).headers,
+        },
+      }),
+
+    post: (url: string, data?: any, config = {}) =>
+      apiClient.post(url, data, {
+        ...config,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          ...(config as any).headers,
+        },
+      }),
+
+    put: (url: string, data?: any, config = {}) =>
+      apiClient.put(url, data, {
+        ...config,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          ...(config as any).headers,
+        },
+      }),
+
+    delete: (url: string, config = {}) =>
+      apiClient.delete(url, {
+        ...config,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          ...(config as any).headers,
+        },
+      }),
+  };
+};

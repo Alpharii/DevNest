@@ -54,6 +54,8 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
 
   const isPublic = detail?.visibility === 1;
 
+  console.log(detail)
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
@@ -174,10 +176,10 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
                           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-zinc-400 to-zinc-600 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
                             {m.user?.username?.slice(0, 2).toUpperCase() ?? "??"}
                           </div>
-                          <span className="text-xs text-foreground">{m.user?.username}</span>
+                          <span className="text-xs text-foreground">{m.user?.username ?? "User"}</span>
                         </div>
                         <span className="text-[11px] text-muted-foreground bg-white border border-zinc-200 px-2 py-0.5 rounded-full">
-                          {m.role || "Member"}
+                          {m?.role.length > 2 ? m?.role : "Member"}
                         </span>
                       </li>
                     ))}

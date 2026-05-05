@@ -30,7 +30,7 @@ func FindDetailProject(c *fiber.Ctx, db *gorm.DB) error {
 		})
 	}
 
-	response := projectservices.MapProjectToDTO(project)
+	response := projectservices.MapDetailProjectDTO(project)
 
 	return c.Status(200).JSON(response)
 }

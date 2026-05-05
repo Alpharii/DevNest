@@ -3,7 +3,7 @@ import { Outlet, redirect, useLoaderData, type LoaderFunctionArgs } from "react-
 import { Footer } from "~/components/Footer";
 import { Navbar } from "~/components/Navbar";
 import { Sidebar } from "~/components/Sidebar";
-import { apiClient, setApiToken, tokenCookie } from "~/lib/apiClient";
+import { apiClient, createApiClientWithToken, setApiToken, tokenCookie } from "~/lib/apiClient";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookie = request.headers.get("Cookie");
@@ -12,7 +12,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   setApiToken(token);
   try {
-    const user = await apiClient.get("users/me");
+    const api = createApiClientWithToken(token)
+    const user = await api.get("users/me");
     return { user: user.data, token };
   } catch (error) {
     return redirect("/login");
@@ -29,7 +30,7 @@ export default function PostAuthLayout() {
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-        <main className="flex-1 overflow-y-auto pb-20">
+        <main className="flex-1 overflow-y-auto min-h-full">
           <Outlet context={token} />
           <Footer />
         </main>

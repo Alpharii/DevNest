@@ -6,7 +6,7 @@ import (
 )
 
 
-func MapProjectToDTO(project entity.Project) projectdto.ProjectDetailResponse {
+func MapDetailProjectDTO(project entity.Project) projectdto.ProjectDetailResponse {
 	visibility := uint(0)
 	if project.Visibility != nil {
 		visibility = *project.Visibility

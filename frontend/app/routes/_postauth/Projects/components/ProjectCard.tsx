@@ -9,7 +9,7 @@ export function ProjectCard({
   project: any;
   onView: () => void;
 }) {
-  const isPublic = p.Visibility === 1;
+  const isPublic = p.visibility === 1;
 
   return (
     <div className="group rounded-xl border border-zinc-800 bg-slate-100 overflow-hidden hover:border-violet-500/60 hover:shadow-lg hover:shadow-violet-500/5 transition-all duration-200">
@@ -22,10 +22,10 @@ export function ProjectCard({
         </div>
         <div>
           <h3 className="text-sm font-semibold text-foreground leading-tight truncate">
-            {p.Title}
+            {p.title}
           </h3>
           <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
-            {p.Description || "Tidak ada deskripsi."}
+            {p.description || "Tidak ada deskripsi."}
           </p>
         </div>
       </div>
@@ -36,10 +36,10 @@ export function ProjectCard({
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 rounded-full bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center text-white text-[9px] font-semibold shrink-0">
-              {p.Owner?.Username?.slice(0, 2).toUpperCase() ?? "??"}
+              {p.owner?.username?.slice(0, 2).toUpperCase() ?? "??"}
             </div>
             <span className="text-xs text-muted-foreground truncate">
-              {p.Owner?.Username ?? "Unknown"}
+              {p.owner?.username ?? "Unknown"}
             </span>
           </div>
           <div className="hidden sm:flex items-center gap-1 shrink-0">

@@ -29,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const password = formData.get("password");
   const remember = formData.get("remember") === "true";
 
-  try{    
+  try{
     if (flag === "login") {
       return await LoginAction(email as string, password as string, remember);
     }
