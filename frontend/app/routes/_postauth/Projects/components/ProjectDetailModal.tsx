@@ -10,12 +10,15 @@ import { VisibilityBadge } from "~/components/VisibilityBadge";
 interface ProjectDetailModalProps {
   projectId: number;
   onClose: () => void;
+  onJoinResult: (result: {
+    success?: boolean;
+    error?: string;
+    message?: string;
+  }) => void;
 }
 
-export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalProps) {
+export function ProjectDetailModal({ projectId, onClose, onJoinResult }: ProjectDetailModalProps) {
   const detailFetcher = useFetcher<{ project?: any; error?: string }>();
-  console.log('id',projectId)
-
   const joinFetcher = useFetcher<{ success: boolean; error?: string }>();
 
   const isLoading = detailFetcher.state === "loading";
@@ -27,7 +30,7 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
   const joinError = joinFetcher.data?.error ?? null;
 
   useEffect(() => {
-    detailFetcher.load(`/projects/${projectId}`);
+    detailFetcher.load(`/projects/fetcher/${projectId}`);
   }, [projectId]);
 
   useEffect(() => {
@@ -48,13 +51,17 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
   const handleJoin = () => {
     joinFetcher.submit(
       { intent: "join" },
-      { method: "POST", action: `/projects/${projectId}` }
+      { method: "POST", action: `/projects/fetcher/${projectId}` }
     );
   };
 
   const isPublic = detail?.visibility === 1;
 
-  console.log(detail)
+  useEffect(() => {
+    if (!joinFetcher.data) return;
+
+    onJoinResult(joinFetcher.data);
+  }, [joinFetcher.data]);
 
   return (
     <div
@@ -65,7 +72,7 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
       <div className="relative w-full max-w-lg rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 overflow-hidden">
 
         {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-violet-500 via-indigo-500 to-violet-600" />
+        <div className="h-1 w-full bg-linear-to-r from-violet-500 via-indigo-500 to-violet-600" />
 
         {/* Close button */}
         <button
@@ -135,7 +142,7 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
                     Pemilik
                   </p>
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-600 to-indigo-700 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-linear-to-br from-violet-600 to-indigo-700 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
                       {detail.owner?.username?.slice(0, 2).toUpperCase() ?? "??"}
                     </div>
                     <div className="min-w-0">
@@ -173,7 +180,7 @@ export function ProjectDetailModal({ projectId, onClose }: ProjectDetailModalPro
                     {detail.members.map((m: any) => (
                       <li key={m.id} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-zinc-400 to-zinc-600 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
+                          <div className="w-6 h-6 rounded-full bg-linear-to-br from-zinc-400 to-zinc-600 flex items-center justify-center text-white text-[10px] font-semibold shrink-0">
                             {m.user?.username?.slice(0, 2).toUpperCase() ?? "??"}
                           </div>
                           <span className="text-xs text-foreground">{m.user?.username ?? "User"}</span>

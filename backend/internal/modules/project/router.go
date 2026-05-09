@@ -15,6 +15,10 @@ func ProjectRouter(router fiber.Router, db *gorm.DB){
 		return projectController.FindAllProjects(c, db)	
 	})
 
+	routes.Get("/my-projects", func (c *fiber.Ctx) error {
+		return projectController.FindAllProjectsByToken(c, db)	
+	})
+
 	routes.Get("/:id", func (c *fiber.Ctx) error {
 		return projectController.FindDetailProject(c, db)	
 	})

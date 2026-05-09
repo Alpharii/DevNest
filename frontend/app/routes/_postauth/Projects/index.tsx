@@ -1,6 +1,6 @@
-import { useLoaderData, useSearchParams, useNavigate, type LoaderFunctionArgs } from "react-router";
+import { useLoaderData, useSearchParams, useNavigate, type LoaderFunctionArgs, useActionData, type ActionFunctionArgs } from "react-router";
 import { apiClient } from "~/lib/apiClient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search, FolderKanban, SlidersHorizontal, X,
   ChevronLeft, ChevronRight, Plus, BookMarked,
@@ -8,6 +8,12 @@ import {
 import { Button } from "~/components/ui/button";
 import { ProjectCard } from "./components/ProjectCard";
 import { ProjectDetailModal } from "./components/ProjectDetailModal"
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { LIMIT_OPTIONS, VISIBILITY_OPTIONS } from "~/lib/paginationOption";
+import { CreateProject } from "./action/createProject";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -32,17 +38,57 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 }
 
-const VISIBILITY_OPTIONS = [
-  { label: "Semua", value: "all" },
-  { label: "Public", value: "1" },
-  { label: "Private", value: "0" },
-];
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const actionType = formData.get("actionType");
+  const title = formData.get("title");
+  const description = formData.get("description");
+  const visibility = Number(formData.get("visibility"));
 
-const LIMIT_OPTIONS = ["10", "20", "50"];
+  try{
+    if (actionType === "createProject") {
+      return await CreateProject(title as string, description as string, visibility as number);
+    }
+  } catch (error: any) {
+    const message = error.response?.data?.error || "Login gagal, periksa kembali title/description";
+    return { success: false, error: message, status: 401 };
+  }
+}
+
+const projectSchema = z.object({
+  actionType: z.string().min(1),
+  title: z.string().min(2, "title minimal 2 karakter"),
+  description: z.string().optional(),
+  visibility: z.number().optional(),
+});
+
+type ProjectFormValues = z.infer<typeof projectSchema>;
 
 export default function Projects() {
-  const { projects, search, visibility, page, limit } =
-    useLoaderData<typeof loader>();
+  const { projects, search, visibility, page, limit } = useLoaderData<typeof loader>();
+
+  const actionData = useActionData<typeof action>();
+
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectSchema),
+    defaultValues: {
+      actionType: "createProject",
+      title: "",
+      description: "",
+      visibility: 0,
+    },
+  });
+
+  useEffect(() => {
+    if (!actionData) return;
+
+    if (actionData.error) {
+      toast.error(actionData.error, { position: "top-right" });
+    }
+  }, [actionData]);
+
+  // const watchedValues = form.watch();
+  // console.log('form', watchedValues);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -86,6 +132,27 @@ export default function Projects() {
   };
 
   const activeFilterCount = visibility !== "all" ? 1 : 0;
+
+  const [joinResult, setJoinResult] = useState<{
+    success?: boolean;
+    error?: string;
+    message?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!joinResult) return;
+    if (joinResult.success) {
+      toast.success(joinResult.message || "Berhasil join project", {
+        position: "top-right",
+      });
+    }
+    if (joinResult.error) {
+      toast.error(joinResult.error, {
+        position: "top-right",
+      });
+    }
+    setJoinResult(null);
+  }, [joinResult]);
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-8 h-full flex flex-col">
@@ -326,6 +393,7 @@ export default function Projects() {
         <ProjectDetailModal
           projectId={selectedId}
           onClose={() => setSelectedId(null)}
+          onJoinResult={setJoinResult}
         />
       )}
 
