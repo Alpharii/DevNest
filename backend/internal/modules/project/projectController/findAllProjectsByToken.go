@@ -49,7 +49,8 @@ func FindAllProjectsByToken(c *fiber.Ctx, db *gorm.DB) error {
 
 	query := db.Model(&entity.Project{}).
 		Joins("JOIN project_members ON project_members.project_id = projects.id").
-		Where("project_members.user_id = ?", userID)
+		Where("project_members.user_id = ?", userID).
+		Group("projects.id")
 
 	if(visibility != "") {
 		visibilityInt, err := strconv.Atoi(visibility)
