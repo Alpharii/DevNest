@@ -39,5 +39,15 @@ func CreateProject(c *fiber.Ctx, db *gorm.DB) error {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	member := entity.ProjectMember{
+		ProjectID: project.ID,
+		UserID: userID,
+		Role: "Owner",
+	}
+
+	if err := db.Create(&member).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to join projects"})
+	}
+
 	return c.Status(201).JSON(project)
 }

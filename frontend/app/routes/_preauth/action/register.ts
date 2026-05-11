@@ -10,7 +10,7 @@ export const RegisterAction = async (name: string, email: string, password: stri
   }
 
   try {
-    await apiClient.post("/auth/register", { name, email, password, confirmPassword });
+    await apiClient.post("/auth/register", { username: name, email, password });
      return {
         success: true,
         message: "Registrasi berhasil, silakan login dengan email dan password yang telah didaftarkan",

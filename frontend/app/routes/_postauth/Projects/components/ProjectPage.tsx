@@ -12,8 +12,6 @@ import { CreateProjectModal } from "./CreateProjectModal";
 import { toast } from "sonner";
 import { LIMIT_OPTIONS, VISIBILITY_OPTIONS } from "~/lib/paginationOption";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 interface ToastResult {
   success?: boolean;
   error?: string;
@@ -24,17 +22,13 @@ export interface ProjectsPageConfig {
   headerIcon: LucideIcon;
   title: string;
   description: string;
-  /** Label tombol navigasi sekunder */
   navButtonLabel: string;
-  /** Ikon tombol navigasi sekunder */
   navButtonIcon: LucideIcon;
-  /** Tujuan tombol navigasi sekunder */
   navButtonTo: string;
 }
 
 interface ProjectsPageProps {
   config: ProjectsPageConfig;
-  /** Data dari loader (projects, search, visibility, page, limit) */
   loaderData: {
     projects: any;
     search: string;
@@ -42,11 +36,8 @@ interface ProjectsPageProps {
     page: number;
     limit: number;
   };
-  /** Data dari action (opsional) */
   actionData?: { success?: boolean; error?: string; message?: string } | null;
 }
-
-// ─── Component ───────────────────────────────────────────────────────────────
 
 export function ProjectsPage({ config, loaderData, actionData }: ProjectsPageProps) {
   const { projects, search, visibility, page, limit } = loaderData;
@@ -57,13 +48,11 @@ export function ProjectsPage({ config, loaderData, actionData }: ProjectsPagePro
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
 
-  // ── Toast: action error ──────────────────────────────────────────────────
   useEffect(() => {
     if (!actionData?.error) return;
     toast.error(actionData.error, { position: "top-right" });
   }, [actionData]);
 
-  // ── Toast: join / create result ──────────────────────────────────────────
   const [joinResult, setJoinResult] = useState<ToastResult | null>(null);
   const [createResult, setCreateResult] = useState<ToastResult | null>(null);
 
@@ -83,7 +72,6 @@ export function ProjectsPage({ config, loaderData, actionData }: ProjectsPagePro
     setCreateResult(null);
   }, [createResult]);
 
-  // ── Pagination helpers ───────────────────────────────────────────────────
   const totalPages = projects?.total ? Math.ceil(projects.total / limit) : 1;
 
   const setParam = (key: string, value: string) => {
@@ -123,11 +111,9 @@ export function ProjectsPage({ config, loaderData, actionData }: ProjectsPagePro
 
   const activeFilterCount = visibility !== "all" ? 1 : 0;
 
-  // ── Destructure config icons ─────────────────────────────────────────────
   const HeaderIcon = config.headerIcon;
   const NavIcon = config.navButtonIcon;
 
-  // ── Render ───────────────────────────────────────────────────────────────
   return (
     <main className="max-w-6xl mx-auto px-6 py-8 h-full flex flex-col">
       <div className="flex-1 space-y-6 pb-6">

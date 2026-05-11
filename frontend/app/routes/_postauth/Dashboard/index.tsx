@@ -12,8 +12,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   try {
     const cookie = request.headers.get("Cookie");
     const token = await tokenCookie.parse(cookie);
-    const api = createApiClientWithToken(token)
+    createApiClientWithToken(token)
     const userData = await apiClient.get("users/me/dashboard");
+    console.log('data', userData.data)
     return { userData: userData.data };
   } catch (error: any) {
     const message = error.response?.data?.error || "Gagal memuat dashboard, coba lagi nanti";
@@ -32,6 +33,8 @@ export default function Home() {
     member_projects = [],
     assigned_tasks,
   } = userData ?? {};
+
+  console.log('user', userData)
 
   const avatarInitials = username
     ? username.slice(0, 2).toUpperCase()

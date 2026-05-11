@@ -4,7 +4,6 @@ import (
 	"devNest/internal/entity"
 	usersdto "devNest/internal/modules/users/dto"
 )
-
 func MapDashboardToDTO(user entity.User) usersdto.DashboardResponse {
 	res := usersdto.DashboardResponse{
 		ID:       user.ID,
@@ -14,6 +13,10 @@ func MapDashboardToDTO(user entity.User) usersdto.DashboardResponse {
 			Bio:       user.Profile.Bio,
 			AvatarURL: user.Profile.AvatarURL,
 		},
+
+		OwnedProjects:  []usersdto.ProjectResponse{},
+		MemberProjects: []usersdto.MemberProjectResponse{},
+		AssignedTasks:  []usersdto.TaskAssigneeResponse{},
 	}
 
 	for _, p := range user.OwnedProjects {
@@ -38,7 +41,7 @@ func MapDashboardToDTO(user entity.User) usersdto.DashboardResponse {
 
 	for _, t := range user.AssignedTasks {
 		res.AssignedTasks = append(res.AssignedTasks, usersdto.TaskAssigneeResponse{
-			ID:   t.ID,
+			ID: t.ID,
 			Tasks: usersdto.TasksResponse{
 				ID:          t.Task.ID,
 				Title:       t.Task.Title,
