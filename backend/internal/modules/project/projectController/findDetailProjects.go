@@ -11,6 +11,14 @@ import (
 func FindDetailProject(c *fiber.Ctx, db *gorm.DB) error {
 	projectId := c.Params("id")
 
+	userId := c.Locals("user_id")
+	if userId == nil {
+		return c.Status(401).JSON(fiber.Map{
+			"message": "unauthorized",
+		})
+	}
+
+	userID := userId.(uint)
 	var project entity.Project
 
 	err := db.
@@ -30,7 +38,7 @@ func FindDetailProject(c *fiber.Ctx, db *gorm.DB) error {
 		})
 	}
 
-	response := projectservices.MapDetailProjectDTO(project)
+	response := projectservices.MapDetailProjectDTO(project, userID)
 
 	return c.Status(200).JSON(response)
 }

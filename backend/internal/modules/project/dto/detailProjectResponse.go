@@ -5,6 +5,7 @@ type ProjectDetailResponse struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Visibility  uint   `json:"visibility"`
+	IsJoined  	bool   `json:"isJoined"`
 
 	Owner   ProjectOwnerResponse    `json:"owner"`
 	Members []ProjectMemberResponse `json:"members"`

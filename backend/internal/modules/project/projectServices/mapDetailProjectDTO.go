@@ -5,8 +5,7 @@ import (
 	projectdto "devNest/internal/modules/project/dto"
 )
 
-
-func MapDetailProjectDTO(project entity.Project) projectdto.ProjectDetailResponse {
+func MapDetailProjectDTO(project entity.Project, userId uint) projectdto.ProjectDetailResponse {
 	visibility := uint(0)
 	if project.Visibility != nil {
 		visibility = *project.Visibility
@@ -17,6 +16,7 @@ func MapDetailProjectDTO(project entity.Project) projectdto.ProjectDetailRespons
 		Title:       project.Title,
 		Description: project.Description,
 		Visibility:  visibility,
+		IsJoined:    false,
 	}
 
 	// owner
@@ -32,6 +32,12 @@ func MapDetailProjectDTO(project entity.Project) projectdto.ProjectDetailRespons
 
 	// members
 	for _, m := range project.Members {
+
+		// cek apakah user sudah join
+		if m.User.ID == userId {
+			res.IsJoined = true
+		}
+
 		member := projectdto.ProjectMemberResponse{
 			ID:   m.ID,
 			Role: m.Role,

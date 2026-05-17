@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { useFetcher } from "react-router";
+import { Link, useFetcher } from "react-router";
 import {
   FolderKanban, X, Users, UserPlus,
   Loader2, AlertCircle,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { VisibilityBadge } from "~/components/VisibilityBadge";
@@ -56,12 +57,15 @@ export function ProjectDetailModal({ projectId, onClose, onJoinResult }: Project
   };
 
   const isPublic = detail?.visibility === 1;
+  const isJoined = detail?.isJoined
 
   useEffect(() => {
     if (!joinFetcher.data) return;
 
     onJoinResult(joinFetcher.data);
   }, [joinFetcher.data]);
+
+  console.log(detailFetcher, isJoined)
 
   return (
     <div
@@ -218,37 +222,60 @@ export function ProjectDetailModal({ projectId, onClose, onJoinResult }: Project
             </div>
 
             {/* Footer actions */}
-            <div className="px-6 py-4 border-t border-zinc-100 flex items-center justify-end gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={onClose}
-                className="h-9 px-4 text-xs border-zinc-300 text-zinc-600 hover:text-foreground hover:border-zinc-400"
-              >
-                Batal
-              </Button>
-
-              {!joinSuccess && (
+            {!isJoined ? (
+              <div className="px-6 py-4 border-t border-zinc-100 flex items-center justify-end gap-2">
                 <Button
                   size="sm"
-                  onClick={handleJoin}
-                  disabled={isJoining}
-                  className="h-9 px-4 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-1.5 disabled:opacity-60"
+                  variant="outline"
+                  onClick={onClose}
+                  className="h-9 px-4 text-xs border-zinc-300 text-zinc-600 hover:text-foreground hover:border-zinc-400"
                 >
-                  {isJoining ? (
-                    <>
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      Bergabung…
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="h-3.5 w-3.5" />
-                      Bergabung
-                    </>
-                  )}
+                  Batal
                 </Button>
-              )}
-            </div>
+
+                {!joinSuccess && (
+                  <Button
+                    size="sm"
+                    onClick={handleJoin}
+                    disabled={isJoining}
+                    className="h-9 px-4 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-1.5 disabled:opacity-60"
+                  >
+                    {isJoining ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        Bergabung…
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="h-3.5 w-3.5" />
+                        Bergabung
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="px-6 py-4 border-t border-zinc-100 flex items-center justify-end gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={onClose}
+                  className="h-9 px-4 text-xs border-zinc-300 text-zinc-600 hover:text-foreground hover:border-zinc-400"
+                >
+                  Batal
+                </Button>
+
+                <Link to={`/detail/${detail.id}`}>                
+                  <Button
+                    size="sm"
+                    className="h-9 px-4 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-1.5 disabled:opacity-60"
+                  >
+                        <ArrowRight className="h-3.5 w-3.5" />
+                        Lihat Detail
+                  </Button>
+                </Link>
+              </div>
+            )}
           </>
         )}
       </div>
