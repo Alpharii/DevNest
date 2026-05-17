@@ -24,6 +24,9 @@ func FindDetailProject(c *fiber.Ctx, db *gorm.DB) error {
 	err := db.
 		Preload("Owner.Profile").
 		Preload("Members.User.Profile").
+		Preload("BoardColumns").
+		Preload("BoardColumns.Tasks").
+		Preload("BoardColumns.Tasks.Assignees.User.Profile").
 		First(&project, projectId).Error
 
 	if err != nil {

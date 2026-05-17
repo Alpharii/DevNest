@@ -55,5 +55,39 @@ func MapDetailProjectDTO(project entity.Project, userId uint) projectdto.Project
 		res.Members = append(res.Members, member)
 	}
 
+	for _, column := range project.BoardColumns {
+		columnRes := projectdto.ProjectBoardColumnResponse{
+			ID:   column.ID,
+			Name: column.Name,
+		}
+
+		// tasks
+		for _, task := range column.Tasks {
+			taskRes := projectdto.ProjectTaskResponse{
+				ID:          task.ID,
+				Title:       task.Title,
+				Description: task.Description,
+			}
+
+			// assignees
+			for _, assignee := range task.Assignees {
+				taskRes.Assignees = append(
+					taskRes.Assignees,
+					projectdto.ProjectTaskAssigneeResponse{
+						ID:       assignee.User.ID,
+						Username: assignee.User.Username,
+						Email:    assignee.User.Email,
+						Profile: projectdto.ProfileResponse{
+							Bio:       assignee.User.Profile.Bio,
+							AvatarURL: assignee.User.Profile.AvatarURL,
+						},
+					},
+				)
+			}
+			columnRes.Tasks = append(columnRes.Tasks, taskRes)
+		}
+		res.BoardColumns = append(res.BoardColumns, columnRes)
+	}
+
 	return res
 }

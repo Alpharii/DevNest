@@ -31,7 +31,7 @@ export function ProjectDetailModal({ projectId, onClose, onJoinResult }: Project
   const joinError = joinFetcher.data?.error ?? null;
 
   useEffect(() => {
-    detailFetcher.load(`/projects/fetcher/${projectId}`);
+    detailFetcher.load(`/projects/detail/${projectId}`);
   }, [projectId]);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export function ProjectDetailModal({ projectId, onClose, onJoinResult }: Project
   const handleJoin = () => {
     joinFetcher.submit(
       { intent: "join" },
-      { method: "POST", action: `/projects/fetcher/${projectId}` }
+      { method: "POST", action: `/projects/join/${projectId}` }
     );
   };
 
@@ -265,7 +265,7 @@ export function ProjectDetailModal({ projectId, onClose, onJoinResult }: Project
                   Batal
                 </Button>
 
-                <Link to={`/detail/${detail.id}`}>                
+                <Link to={`detail/${detail.id}`}>                
                   <Button
                     size="sm"
                     className="h-9 px-4 text-xs bg-violet-600 hover:bg-violet-700 text-white gap-1.5 disabled:opacity-60"
