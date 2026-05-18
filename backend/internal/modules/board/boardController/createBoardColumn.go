@@ -19,5 +19,23 @@ func CreateBoardColumn(c *fiber.Ctx, db *gorm.DB) error {
 		return c.Status(404).JSON(fiber.Map{"error": "not found"})
 	}
 	
-	return nil
+	var payload struct {
+		Name      	string	`json:"name"`
+		ProjectID 	uint	`json:"project_id"`
+	}
+
+	if err := c.BodyParser(&payload).Error; err != nil{
+		return c.Status(400).JSON(fiber.Map{"error": "invalid"})
+	}
+
+	boardColumn := entity.BoardColumn{
+		Name: payload.Name,
+		ProjectID: payload.ProjectID,
+	}
+
+	if err := db.Create(&boardColumn).Error; err != nil{
+		return c.Status(400).JSON(fiber.Map{"error": "failed to create column"})
+	}
+
+	return c.Status(201).JSON(boardColumn)
 }
